@@ -23,7 +23,9 @@ inner_links = soup.find_all('a', class_ ='_31qSD5')
 
 for link in inner_links:
     # link to the product
+    # WE ARE EXTRACTING THIS TO ADD IN CSV MODULE FURTHER
     href = fk + link['href']
+
     # name of the product -- name + proccessor
     name =(link.find('div', class_='col col-7-12')).find('div','_3wU53n').text
     try:
@@ -53,7 +55,20 @@ for link in inner_links:
         disc = 'No Discount On This Item'
     else:
         disc = disc.span.text
+
+    # FRONTLINE SPECS: -- showed as an unordered list
+    ul = link.find('ul', class_ = 'vFw0gD')
+    # all_lis is a list of all the list item texts
+    all_lis = ul.find_all('li')
+    
+    print()
+    # PRINTING THE FRONTLINE SPECS
+    print(' MAIN SPECS OF THIS ITEM ARE : ')
+    for one_li in all_lis:
+        print(one_li.text)
+    
+    print()
     print('MRP : ', mrp)
     print('Sale Price : ', sp)
     print('Discount : ',disc )
-    print('\n')
+    print('----------------------------------------\n')
