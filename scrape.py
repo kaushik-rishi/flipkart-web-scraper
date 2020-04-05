@@ -1,13 +1,13 @@
-# VERY BIG REALISATION 
-# WORKS ONLY FOR VERTICALLY DISPLAYED PAGES
-
 from bs4 import BeautifulSoup
+# to write into csv file
+import csv
 import urllib
 import requests
 import webbrowser
 import os
 import lxml
 import html.parser
+# we can also import the pandas for further analysis on the csv file but the import pandas as pd operation is very costly
 
 def join_with_flipkart(tail, qry):
     
@@ -43,12 +43,21 @@ soup = BeautifulSoup(html, 'lxml')
 # everything inside the main div is a link wherever i click this redirects me to a new page containing the item
 inner_links = soup.find_all('a', class_ ='_31qSD5')
 
+# Creating a folder to store specs and navigating into that folder
+os.mkdir('Specifications')
+# print(os.getcwd())
+os.chdir('Specifications')
+# print(os.getcwd())
+
 for link in inner_links:
     # link to the product
     # WE ARE EXTRACTING THIS TO ADD IN CSV MODULE FURTHER
     # href = fk + link['href']
     # using the function()
     href = join_with_flipkart(link['href'], 0)
+
+    # to open all the links
+    # webbrowser.open(href)
 
     # name of the product -- name + proccessor
     name =(link.find('div', class_='col col-7-12')).find('div','_3wU53n').text
@@ -86,11 +95,43 @@ for link in inner_links:
     all_lis = ul.find_all('li')
     
     print()
-    # PRINTING THE FRONTLINE SPECS
+
     print(' MAIN SPECS OF THIS ITEM ARE : ')
+    # PRINTING THE FRONTLINE SPECS
     for one_li in all_lis:
         print(one_li.text)
+        # pass
 
+    try :
+        file_name = name
+        ctr=1
+        while os.path.exists(file_name):
+            file_name = name + str(ctr)
+            ctr+=1
+        with open(file_name, 'w') as wf:
+            for one_li in all_lis:
+                # writing the specs into the file
+                wf.write(str(one_li.text) + '\n')
+            
+            wf.write(f'MRP : {mrp}\n')
+            wf.write(f'Selling Price : {sp}\n')
+            wf.write(f'Discount : {disc}\n')
+
+    except:
+        print(name, ' file couldnot be created because the file name was not valid')
+        temp_file = input(f'please enter a name for this item {name} : \n')
+        ctr = 1
+        file_name = temp_file
+        while os.path.exists(temp_file):
+            file_name= temp_file + str(ctr)
+            ctr += 1
+        with open(file_name, 'w') as wf_temp:
+            for one_li in all_lis:
+                wf_temp.write(str(one_li.text)+'\n')
+                
+            wf_temp.write(f'MRP : {mrp}\n')
+            wf_temp.write(f'Selling Price : {sp}\n')
+            wf_temp.write(f'Discount : {disc}\n')
 # -----------------------------------------FAIL IMAGE EXTRACTION--------------------------------
     # img_tag = link.find('img', class_='_1Nyybr')
     # print(img_tag['src'])
