@@ -47,6 +47,13 @@ for link in inner_links:
     # SP(selling price of the item) of the item
     sp = (link.find('div', class_='_1vC4OE _2rQ-NK').text)[1:]
 
+    # discount span
+    disc = link.find('div', class_ = 'VGWI6T')
+    if disc == None:
+        disc = 'No Discount On This Item'
+    else:
+        disc = disc.span.text
     print('MRP : ', mrp)
     print('Sale Price : ', sp)
+    print('Discount : ',disc )
     print('\n')
