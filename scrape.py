@@ -49,6 +49,11 @@ os.mkdir('Specifications')
 os.chdir('Specifications')
 # print(os.getcwd())
 
+# csv FILE
+csv_file = open('List Of Items.csv', 'w')
+csv_writer = csv.writer(csv_file)
+csv_writer.writerow(['name', 'MRP', 'SP', 'Discount', 'Link to Buy'])
+
 for link in inner_links:
     # link to the product
     # WE ARE EXTRACTING THIS TO ADD IN CSV MODULE FURTHER
@@ -151,3 +156,8 @@ for link in inner_links:
     print('Sale Price : ', sp)
     print('Discount : ',disc )
     print('----------------------------------------\n')
+
+    l = [name ,mrp ,sp ,disc ,href]
+    csv_writer.writerow(l)
+
+csv_file.close()
