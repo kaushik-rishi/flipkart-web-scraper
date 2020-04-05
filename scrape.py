@@ -2,16 +2,35 @@ from bs4 import BeautifulSoup
 import urllib
 import requests
 import webbrowser
+import os
+import lxml
+import html.parser
+
+def join_with_flipkart(tail, qry):
+    
+    fk = 'https://www.flipkart.com'
+    qparam = '/search?q='
+    
+    # joining not as a query
+    if qry==0:
+        return fk+tail
+    # join as a query
+    else:
+        return fk + qparam + tail
 
 # asking the user what he wants to search
-# qry = input('What Items Do you Want to Search \n Example : \'Laptop i7\' \'Wireless Mouse\' : \n')
+qry = input('What Items Do you Want to Search \n Example : \'Laptop i7\' \'Wireless Mouse\' : \n')
 
-fk = 'https://www.flipkart.com'
+url = join_with_flipkart(qry, 1)
 
-# query = '/search?q='
-url = 'https://www.flipkart.com/search?q=laptop%20i7'
+# webbrowser.open(url)
 
 response = requests.get(url)
+
+if response.status_code >= 400:
+    print('BAD REQUEST')
+    quit()
+
 html = response.text
 
 # either one will work 'lxml' or 'html.parser'
@@ -24,7 +43,9 @@ inner_links = soup.find_all('a', class_ ='_31qSD5')
 for link in inner_links:
     # link to the product
     # WE ARE EXTRACTING THIS TO ADD IN CSV MODULE FURTHER
-    href = fk + link['href']
+    # href = fk + link['href']
+    # using the function()
+    href = join_with_flipkart(link['href'], 0)
 
     # name of the product -- name + proccessor
     name =(link.find('div', class_='col col-7-12')).find('div','_3wU53n').text
@@ -66,6 +87,20 @@ for link in inner_links:
     print(' MAIN SPECS OF THIS ITEM ARE : ')
     for one_li in all_lis:
         print(one_li.text)
+
+# -----------------------------------------FAIL IMAGE EXTRACTION--------------------------------
+    # img_tag = link.find('img', class_='_1Nyybr')
+    # print(img_tag['src'])
+    # OR EVEN THIS CAN BE USED
+    # img_tag = link.find('div', class_ = '_3SQWE6').img
+
+    # if image is available
+    # if img_tag == None:
+    #     img_src = None
+    # else:
+    #     img_src = img_tag['src']
+    # print(img_src)
+# --------------------------------------------------------------------------------
     
     print()
     print('MRP : ', mrp)
