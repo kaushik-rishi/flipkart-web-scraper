@@ -4,13 +4,14 @@ import requests
 import webbrowser
 
 # asking the user what he wants to search
-#qry = input('What Items Do you Want to Search \n Example : \'Laptop i7\' \'Wireless Mouse\' : \n')
+# qry = input('What Items Do you Want to Search \n Example : \'Laptop i7\' \'Wireless Mouse\' : \n')
 
 fk = 'https://www.flipkart.com'
-query = '/search?q='
+# query = '/search?q='
 url = 'https://www.flipkart.com/search?q=laptop%20i7'
 response = requests.get(url)
 html = response.text
+# either one will work 'lxml' or 'html.parser'
 soup = BeautifulSoup(html, 'lxml')
 # soup = BeautifulSoup(html, 'html.parser')
 
@@ -39,7 +40,13 @@ for link in inner_links:
         name = name[:idx]
     print(name)
 
+    # slicing the mrp and sp from index 1 is beause of the inability of python to render and inability of the terminal/powershell to print rupee symbol
+
+    # MRP of the item
+    mrp = (link.find('div', class_='_3auQ3N _2GcJzG')).text
     # SP(selling price of the item) of the item
     sp = (link.find('div', class_='_1vC4OE _2rQ-NK').text)[1:]
+
+    print(mrp)
     print(sp)
     print('\n')
